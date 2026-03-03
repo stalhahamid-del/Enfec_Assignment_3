@@ -1,0 +1,129 @@
+
+Project Name: Agent Registry and A2A Streamlit UI
+
+Overview:
+This project implements an Agent Registry service using Django and a front-end interface using Streamlit. Agents can register themselves in the registry, and tasks can be sent to them using a simple A2A JSON protocol. The project includes two sample agents: Math Helper and Text Summarizer.
+
+Components:
+
+1. Django Agent Registry
+
+   * Handles agent registration and listing.
+   * Stores agents in a SQLite database.
+   * API Endpoints:
+
+     * POST /api/agents/register : Register a new agent
+     * GET /api/agents/list : List all registered agents
+     * GET /api/agents/search?capability=<capability> : Find agents by capability
+
+2. Agent Servers (Minimal Flask Apps)
+
+   * Math Helper: Solves basic math expressions.
+   * Text Summarizer: Summarizes long text into short paragraphs.
+   * Both servers listen on localhost ports 8001 and 8002, respectively.
+
+3. Streamlit UI
+
+   * Provides a dropdown of registered agents.
+   * Input box for task text or math expression.
+   * Send button to submit tasks to selected agent.
+   * Output area to display agent response.
+
+Database:
+
+* Uses default SQLite (db.sqlite3) in Django.
+* Table: registry_agent
+
+  * Columns: name, description, capabilities (JSON), endpoint_url, status
+
+Project Flow:
+
+1. Start Django server for Agent Registry.
+2. Run minimal agent servers for Math Helper and Text Summarizer.
+3. Use Streamlit UI to select an agent, enter a task, and see the output.
+
+Commands and Setup:
+
+1. Create a Python virtual environment and activate it:
+
+   * python -m venv venv
+   * On Windows: venv\Scripts\activate
+   * On Linux/Mac: source venv/bin/activate
+
+2. Install required packages:
+
+   * pip install django djangorestframework requests streamlit flask
+
+3. Navigate to registry_service folder and apply migrations:
+
+   * python manage.py makemigrations
+   * python manage.py migrate
+
+4. Create a superuser for Django admin (optional):
+
+   * python manage.py createsuperuser
+
+5. Start Django server:
+
+   * python manage.py runserver
+   * Default URL: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+6. Register agents using register_agents.py script:
+
+   * python register_agents.py
+   * This will POST agent data to the registry API.
+
+7. Start minimal agent servers:
+
+   * python math_agent.py  (Math Helper agent on port 8001)
+   * python summarizer_agent.py  (Text Summarizer agent on port 8002)
+
+8. Run Streamlit UI:
+
+   * streamlit run streamlit_ui.py
+   * This will open the UI in your default browser.
+   * Select agent from dropdown, enter task input, click Send, view output.
+
+Testing:
+
+* Math Helper example: Input: "25 * 4" → Output: "100"
+* Text Summarizer example: Paste a long paragraph → Output: Summarized text
+
+Notes:
+
+* Ensure agent servers are running before sending tasks.
+* If no agents appear in the Streamlit dropdown, check that agents are registered via API or Django admin.
+* Ports:
+
+  * Django registry: 8000
+  * Math Helper: 8001
+  * Text Summarizer: 8002
+
+Troubleshooting:
+
+* If you get connection refused errors, confirm that agent servers are running and the endpoints match the registry.
+* If Streamlit shows "No agents available", check that the registry has agents with status 'active'.
+
+Project Structure:
+
+* registry_service/
+
+  * manage.py
+  * registry_service/
+
+    * settings.py
+    * urls.py
+  * registry/
+
+    * models.py
+    * views.py
+    * urls.py
+    * serializers.py
+  * register_agents.py
+  * math_agent.py
+  * summarizer_agent.py
+  * streamlit_ui.py
+  * db.sqlite3 (after migration)
+
+This README provides a step-by-step guide to run the entire system, register agents, start agent servers, and use the Streamlit front-end for sending tasks and receiving responses.
+
